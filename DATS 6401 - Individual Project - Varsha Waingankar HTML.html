@@ -1,0 +1,763 @@
+
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+
+    <script type = "text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type = "text/javascript">
+	/* The purpose of this project is to learn about data Visualization and present information in visual manners
+	
+	*/
+	
+	google.charts.load('current' ,{'packages' : ['corechart']});
+	google.charts.setOnLoadCallback(drawAllSheets);
+	
+	function drawAllSheets() {
+	drawSheetName('TopEducation','SELECT A,B,C,D,E,F,G',
+	                 TopEducationResponseHandler);
+					 
+	drawSheetName('TopHealth','SELECT A,B,C,D,E,F,G',
+	                 TopHealthResponseHandler);	
+    drawSheetName('TopEducation', 'SELECT A,B,C,D,E,F,G',
+	                   TopEducationStackResponseHandler);				 
+	drawSheetName('TopHealth', 'SELECT A,B,C,D,E,F,G',
+	                   TopHealthStackResponseHandler);				 
+
+	  drawSheetName('GDPUSDBillions', 'SELECT A,H',
+                      GDPUSDBillionsResponseHandler);
+     
+	drawSheetName('TopEducation','SELECT A,E',
+	                 EducationGeoResponseHandler);
+	
+					 
+	drawSheetName('TopHealth','SELECT A,E',
+	                 HealthGeoResponseHandler);	
+
+   drawSheetName('TopEducation','SELECT A,F',
+                   EducationPieResponseHandler);
+				   
+    drawSheetName('TopHealth', 'SELECT A,F',
+                      HealthPieResponseHandler);	
+				   					  
+
+	drawSheetName('HealthcareGDP' ,'SELECT A,F,O',
+                        CompareTrendHealthGDPResponseHandler);	
+	drawSheetName('EducationGDP', 'SELECT A,F,O',
+	                     CompareTrendEducationGDPResponseHandler);
+						 
+	drawSheetName('HealthcareGDP', 'SELECT A,F,O',
+	                     CompareHealthcareGDPResponseHandler);					 
+	drawSheetName('EducationGDP', 'SELECT A,F,O',
+	                     CompareEducationGDPResponseHandler);					 
+	drawSheetName('HealthMilitary', 'SELECT A,F,P',
+	                     CompareHealthMilitaryResponseHandler);
+						 
+	drawSheetName('EducationMilitary', 'SELECT A,F,P',
+	                     CompareEducationMilitaryResponseHandler);
+	drawSheetName('PercapitaHealthGdp', 'SELECT A,D,U',
+	                     ComparePercapitaHealthGdpResponseHandler);
+	drawSheetName('PercapitaEducationGdp','SELECT A,D,Y',
+	                     ComparePercapitaEducationGdpResponseHandler);
+						 
+	
+	drawSheetName('FastHealth','SELECT A,B,C,D,E,F,G,H,I,J,K',
+	              FastestHealthFixedValueResponseHandler);
+				  
+    drawSheetName('FastHealth',' SELECT M,N,O,P,Q,R,S,T,U,V,W',
+	               FastestHealthPercentValueResponseHandler);
+				   
+	drawSheetName('FastEducation','SELECT A,B,C,D,E,F,G,H,I,J,K',
+	              FastestEducationFixedValueResponseHandler);
+				  
+    drawSheetName('FastEducation',' SELECT M,N,O,P,Q,R,S,T,U,V,W',
+	               FastestEducationPercentValueResponseHandler);
+				   
+	drawSheetName('HGE','SELECT A,D,N,W',
+	               EducationGDPHealthResponseHandler);
+	  }
+						 
+
+	function drawSheetName(sheetName, query, responseHandler) {
+	var queryString = encodeURIComponent(query);
+	var query = new google.visualization.Query(
+	           
+               'https://docs.google.com/spreadsheets/d/1SXlKNQ-9IcPLk-sBKr98bhjpFyepmluRrTqVAWBGbSU/gviz/tq?sheet='
+			   + sheetName + '&headers=1&tq=' + queryString);
+	       query.send(responseHandler);
+	}
+	
+	function checkError(response) {
+	if(response.isError()) {
+	alert('Error in query: '+ response.getMessage() +
+	' ' + response.getDetailedMessage());
+	return;
+	}
+	}
+	//Function end
+	
+	//Education spending of the top 10 nations for 6 years of data  using column chart
+	function TopEducationResponseHandler(response) {
+	
+     checkError(response);
+	 var data = response.getDataTable();
+	 data.sort({column:6, desc:true});
+	 
+	 var options ={
+	 title:'Top 10 nations with highest Educational spending',
+	   vAxis: {title: 'Spending in Billions USD ($)'},
+	  hAxis: {title:  'Country'},
+	 height: 500
+	 
+	 };
+	 
+	 var chart = new google.visualization.ColumnChart(
+	             document.getElementById('TopEducation_div'));
+				 
+	chart.draw(data, options);
+	}
+	
+	//Health care spending of top 10 nations for 6 years of data using column chart
+function TopHealthResponseHandler(response) {
+	
+     checkError(response);
+	 var data = response.getDataTable();
+	 data.sort({column:6, desc:true});
+	 
+	 var options ={
+	 title :' Top 10 nations with highest Healthcare spending',
+	  height: 500,
+	  vAxis: {title: 'Spending in Billions USD ($)'},
+	  hAxis: {title:  'Country'}
+	 
+	 };
+	 
+	 var chart = new google.visualization.ColumnChart(
+	             document.getElementById('TopHealthcare_div'));
+				 
+	chart.draw(data, options);
+	}
+	
+	//Heathcare spending of top 10 nations for 6 years of data using stack chart
+	function TopEducationStackResponseHandler(response) {
+			checkError(response);
+			var data = response.getDataTable();
+			data.sort({column: 6, desc: true});
+			
+			var options = {
+					width: 600,
+					height: 400,
+					title:'Top 10 nations with the highest Educational spending from 2010 to 2015 in USD(billions)',
+					vAxis: {title: 'Country'},
+				    hAxis: {title: 'Spending in Billions ($)'},
+					legend: {position: 'top', maxLines: 3},
+					bar: {groupWidth: '75%'},
+					isStacked: true
+			};
+			
+			var chart = new google.visualization.BarChart(
+					document.getElementById('TopEducationStack_div'));
+			chart.draw(data, options);
+			
+			}
+	//Education spending of top 10 nations for 6 years of data using stack chart
+	function TopHealthStackResponseHandler(response) {
+			checkError(response);
+			var data = response.getDataTable();
+			data.sort({column: 6, desc: true});
+			
+			var options = {
+					width: 600,
+					height: 400,
+					title: 'Top 10 nations with highest  Healthcare spending from 2010 to 2015 in USD (billions)',
+					vAxis: {title: 'Country'},
+				    hAxis: {title: 'Spending in Billions ($)'},
+					legend: {position: 'top', maxLines: 3},
+					bar: {groupWidth: '75%'},
+					isStacked: true
+			};
+			
+			var chart = new google.visualization.BarChart(
+					document.getElementById('TopHealthStack_div'));
+			chart.draw(data, options);
+			
+			}
+	//function end
+	
+	 // Geo map for showing GDP in USD billions
+   function GDPUSDBillionsResponseHandler(response) {
+           checkError(response);
+		   var data = response.getDataTable();
+          data.sort({column:1, desc:true});
+
+        var options = {
+		height :400,
+		colorAxis: {colors: ['#FFEFD5','#D2691E']}, 
+				title: 'Top 10 Countries by Heath care total Spending in 2015 (US Billions $)'
+		
+		};
+
+        var chart = new google.visualization.GeoChart(
+		document.getElementById('GDPUSDBillions_div'));
+		chart.draw(data, options);
+      }
+	  
+	  // Geo map showing top countries Healthcare spending
+	  function HealthGeoResponseHandler(response) {
+           checkError(response);
+		   var data = response.getDataTable();
+          data.sort({column:1, desc:true});
+
+        var options = {
+		height :400,
+		
+		colorAxis: {colors: ['#FFC0CB','#C71585']}, 
+		title: 'Top 10 Countries by Heath care total Spending in 2013 (USD Billions $)'
+		
+		};
+
+        var chart = new google.visualization.GeoChart(
+		document.getElementById('HealthGeo_div'));
+		chart.draw(data, options);
+      }
+	  
+	  // Geo map showing top countries Education spending
+		  function EducationGeoResponseHandler(response) {
+           checkError(response);
+		   var data = response.getDataTable();
+          data.sort({column:1, desc:true});
+
+        var options = {
+		height :400,
+	
+		colorAxis: {colors: ['#FFA07A','#FF4500']}, 
+		title: 'Top 10 Countries by Heath care total Spending in 2013 (USD Billions $)'
+		
+		};
+
+        var chart = new google.visualization.GeoChart(
+		document.getElementById('EducationGeo_div'));
+		chart.draw(data, options);
+      } 
+	  
+	  
+	  //Pie chart showing top countries in Healthcare spending
+	  function HealthPieResponseHandler(response) {
+	   checkError(response);
+		   var data = response.getDataTable();
+          //data.sort({column:1, desc:true});
+
+        var options = {
+		height :400,
+		title: 'Top 10 Countries by Heathcare  Spending in 2014 (US Billions $)'
+		
+		};
+
+        var chart = new google.visualization.PieChart(
+		document.getElementById('HealthPie_div'));
+		chart.draw(data, options);
+      }
+	  
+	  // Pie chart showing top countries in Educational Spending
+	   function EducationPieResponseHandler(response) {
+	   checkError(response);
+		   var data = response.getDataTable();
+         // data.sort({column:1, desc:true});
+
+        var options = {
+		height :400,
+		title: 'Top 10 Countries by Educational  Spending in 2014 (US Billions $)'
+		
+		};
+
+        var chart = new google.visualization.PieChart(
+		document.getElementById('EducationPie_div'));
+		chart.draw(data, options);
+      }
+	  
+	  
+ // Function end
+ 
+ // Comparing Healthcare data in billions to country's gdp in billions for the year 2014
+	function CompareHealthcareGDPResponseHandler(response) {
+			checkError(response);
+			var data = response.getDataTable();
+			data.sort({column: 1, desc: true});
+			
+			var options = {
+				height: 400,
+				legend: 'none',
+				bars: 'horizontal',
+				colors : ['#FA8072','#DC143C'],
+				isStacked: true,
+				annotations: {alwaysOutside: true},
+				title: ' Bar chart representation of the Healthcare Spending vs Total GDP in billions ($)(year 2014)',
+				vAxis: {title: 'Country'},
+				hAxis: {title: 'Spending in Billions USD ($)'}
+			};
+			
+			var chart = new google.visualization.BarChart(
+				document.getElementById('HealthcareGDP_div'));
+		
+			chart.draw(data, options);
+		} //
+  // Scatter chart for Healthcare vs GDP spending
+		
+		function CompareTrendHealthGDPResponseHandler(response) {
+		checkError(response);
+		var data = response.getDataTable();
+		 var options = {
+         title: 'Healthcare spending vs. Total GDP in billions ($) (year 2014)',
+         hAxis: {title: 'Healthcare billions (USD)'},
+         vAxis: {title: 'GDP billions (USD)'},
+		 colors: ['#FF0000','#008000'],
+         legend: 'none' 
+		 };
+
+        var chart = new google.visualization.ScatterChart(document.getElementById('ScatterHealth_div'));
+        chart.draw(data, options);
+         }
+		 
+		 //Scatter chart for the Education vs GDp spending
+		 
+		 function CompareTrendEducationGDPResponseHandler(response) {
+		checkError(response);
+		var data = response.getDataTable();
+		 var options = {
+         title: 'Educational spending vs. Total GDP in billions ($) (year 2014)',
+         hAxis: {title: 'Educational billions (USD)'},
+         vAxis: {title: 'GDP billions (USD)'},
+		 colors: ['#000080','#FF00FF'],
+         legend: 'none'
+      };
+
+        var chart = new google.visualization.ScatterChart(document.getElementById('ScatterEducation_div'));
+        chart.draw(data, options);
+}
+		 
+		
+	//Comparing Education data in billions to country's gdp in billions for the year 2014
+		
+		function CompareEducationGDPResponseHandler(response) {
+			checkError(response);
+			var data = response.getDataTable();
+			data.sort({column: 1, desc: true});
+			
+			var options = {
+				height: 400,
+				legend: 'none',
+				bars: 'horizontal',
+				colors:['#A52A2A','#87CEFA'],
+				isStacked: true,
+				annotations: {alwaysOutside: true},
+				title: 'Bar chart representation of the Educational Spending vs Total GDP  in billions ($)(year 2014)',
+				vAxis: {title: 'Country'},
+				hAxis: {title: 'Spending in Billions USD ($)'}
+			};
+			
+			var chart = new google.visualization.BarChart(
+				document.getElementById('EducationGDP_div'));
+		
+			chart.draw(data, options);
+		} //
+		
+		
+		// Comparing HealthCare spending  in billions to Country's Military spending in billions for the year 2015
+		function CompareHealthMilitaryResponseHandler(response) {
+			checkError(response);
+			var data = response.getDataTable();
+			data.sort({column: 1, desc: true});
+			
+			var options = {
+				height: 400,
+				legend: 'none',
+				bars: 'horizontal',
+				isStacked: true,
+				annotations: {alwaysOutside: true},
+				title: 'Bar chart representation of the Healthcare Spending vs Military spending in billions($)(year 2014)',
+				vAxis: {title: 'Country'},
+				hAxis: {title: 'Spending in Billions USD ($)'}
+			};
+			
+			var chart = new google.visualization.BarChart(
+				document.getElementById('HealthMilitary_div'));
+		
+			chart.draw(data, options);
+		} //
+		
+		// Comparing Education spending in billions to country's Military spending in billions for the year 2014
+		
+		
+		function CompareEducationMilitaryResponseHandler(response) {
+			checkError(response);
+			var data = response.getDataTable();
+			data.sort({column: 1, desc: true});
+			var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+			var options = {
+				height: 400,
+				legend: 'none',
+				bars: 'horizontal',
+				isStacked: true,
+				colors: ['#7FFFD4','#4682B4'],
+				annotations: {alwaysOutside: true},
+				title: 'Bar chart representation of the Educational Spending vs Military Spending in billions ($) (year 2014)',
+				vAxis: {title: 'Country'},
+				hAxis: {title: 'Spending in Billions USD ($)'}
+			};
+			
+			var chart = new google.visualization.BarChart(
+				document.getElementById('EducationMilitary_div'));
+		
+			chart.draw(data, options);
+		} //
+		
+		
+		//Comparing the per person Healthcare  spending to the per person GDP
+		function ComparePercapitaHealthGdpResponseHandler(response) {
+			checkError(response);
+			var data = response.getDataTable();
+			data.sort({column: 1, desc: true});
+			var options = {
+			        title: 'Bar chart representation of the Per person Healthcare spending to per person GDP year 2012 in USD',
+					width: 600,
+					height: 400,
+					colors: [ '#2483b3', '#AAC789'],
+					legend: {position: 'top', maxLines: 3},
+					bar: {groupWidth: '75%'},
+				
+					isStacked: true
+					
+			};
+			
+			var chart = new google.visualization.BarChart(
+					document.getElementById('PercapitaHealthGdp_div'));
+			chart.draw(data, options);
+		
+		}
+		  
+		  // Comparing the per person Education spending to per person GDP
+		  function ComparePercapitaEducationGdpResponseHandler(response) {
+		  
+		var data = response.getDataTable();
+			data.sort({column: 1, desc: true});
+	 var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+					   
+			var options = {
+			        title:'Bar chart representation of the Per person Educational spending to per person GDP year 2012 in USD',
+					width: 600,
+					height: 400,
+					colors: [ '#7B68EE', '#D2691E'],
+					legend: {position: 'top', maxLines: 3},
+					bar: {groupWidth: '75%'},
+				
+					isStacked: true
+					
+			};
+			
+			var formatter = new google.visualization.NumberFormat({
+							fractionDigits: 2, prefix: '$'});
+
+			formatter.format(data, 1);
+		
+			
+			
+			var chart = new google.visualization.BarChart(
+					document.getElementById('PercapitaEducationGdp_div'));
+			chart.draw(data, options);
+		
+		}
+		
+		
+		 
+		
+	//Linechart for fastest growing country in terms of health care in fixed value	
+		
+		function FastestHealthFixedValueResponseHandler(response) {
+		
+		  
+		var data = response.getDataTable();
+	    data.sort({column: 0, desc: false});
+	    var view = new google.visualization.DataView(data);
+     
+       var options = {
+	              vAxis:{title:'GDP'},
+				  hAxis:{title:'Healthcare spending in fixed value billions: USD($)'},
+			      minColor: '#f00',
+                  midColor: '#ddd',
+                  maxColor: '#0d0',
+                  headerHeight: 15,
+                  fontColor: 'black',
+                  showScale: true
+                     };
+					 
+			   var  chart = new google.visualization.LineChart(
+					document.getElementById('HealthFixedValue_div'));
+					
+			   chart.draw(data, options);
+		}			
+
+
+//Linechart for fastest growing country in terms of health care in percent value
+       function  FastestHealthPercentValueResponseHandler(response)	{
+	   
+	   	  
+		var data = response.getDataTable();
+	    data.sort({column: 0, desc: false});
+	    var view = new google.visualization.DataView(data);
+     
+       var options = {
+	              vAxis:{title:'GDP'},
+				  hAxis:{title:'Healthcare spending in percent'},
+			    //  minColor: '#f00',
+                 // midColor: '#ddd',
+                  maxColor: '#0d0',
+                  headerHeight: 15,
+                  fontColor: 'black',
+                  showScale: true
+                     };
+					 
+			   var  chart = new google.visualization.LineChart(
+					document.getElementById('HealthPercentValue_div'));
+					
+			   chart.draw(data, options);
+		}			
+		  
+	//Linechart for fastest growing country in terms of Education in fixed value	  
+		  	
+		function FastestEducationFixedValueResponseHandler(response) {
+		
+		  
+		var data = response.getDataTable();
+	    data.sort({column: 0, desc: false});
+	    var view = new google.visualization.DataView(data);
+     
+       var options = {
+	              vAxis:{title:'GDP'},
+				  hAxis:{title:'Education spending in fixed value: billions USD($)'},
+			      minColor: '#f00',
+                  midColor: '#ddd',
+                  maxColor: '#0d0',
+                  headerHeight: 15,
+                  fontColor: 'black',
+                  showScale: true
+                     };
+					 
+			   var  chart = new google.visualization.LineChart(
+					document.getElementById('EducationFixedValue_div'));
+					
+			   chart.draw(data, options);
+		}			
+
+	//Linechart for fastest growing country in terms of Education in percent value	  
+
+       function  FastestEducationPercentValueResponseHandler(response)	{
+	   
+	   	  
+		var data = response.getDataTable();
+	    data.sort({column: 0, desc: false});
+	    var view = new google.visualization.DataView(data);
+     
+       var options = {
+	              vAxis:{title:'GDP'},
+				  hAxis:{title:'Education  spending in percent'},
+			    //  minColor: '#f00',
+                 // midColor: '#ddd',
+                  maxColor: '#0d0',
+                  headerHeight: 15,
+                  fontColor: 'black',
+                  showScale: true
+                     };
+					 
+			   var  chart = new google.visualization.LineChart(
+					document.getElementById('EducationPercentValue_div'));
+					
+			   chart.draw(data, options);
+		}			
+		  
+		  
+		  // Function for comparing per person Educational and Healthcare spending for per person GDP
+		  function EducationGDPHealthResponseHandler(response) {
+		  
+		var data = response.getDataTable();
+	    data.sort({column: 3, desc: true});
+	 var view = new google.visualization.DataView(data);
+     
+       
+			var options = {
+			        title:' ',
+					hAxis:{title:'Health'},
+					vAxis:{title:'Education'},
+					width: 1000,
+					height: 1000,
+					colors: [ '#E0FFFF', '#191970']
+				       };
+			
+			        var chart = new google.visualization.BubbleChart(
+					document.getElementById('HGE_div'));
+			        chart.draw(data, options);
+		
+		}
+  
+		  
+		  
+	</script>
+	</head>
+	<body>
+	<table> <tr>
+	<h1 style="text-align:center;"> Analysis of Healthcare, Education and Military spending of G20 Countries </h1>
+	<h2 style="text-align:center;"> Varsha Waingankar, MS Data Science, George Washington University  </h2>
+	<br> </br>
+	
+	<h2> Question 1 :   The educational and healthcare spending of at least the top 10 nations </h2>
+
+	<b>  Column Chart representation of Top Educational spending and Healthcare spending for countries </b>
+	<td><div id ="TopEducation_div" style="width:800px; height:600px"></div></td>
+	
+	<td><div id = "TopHealthcare_div" style="width: 800px; height: 600px"></div></td>
+	</tr>
+	</table>
+		
+	</table>
+	
+	<table> <tr>
+	
+	<b> Stacked chart representation of Top Educational spending and Healthcare spending for countries  </b>
+	<br> </br>
+	
+	 <td><div  id ="TopEducationStack_div" style="width:900px; height:500px"></div></td>
+	 <td><div  id ="TopHealthStack_div" style="width:900px; height:500px"></div></td>
+	 </tr></table>
+	
+	 
+	 <table><tr>
+	 <b> Geo Maps representation of Top Educational spending and Healthcare spending for countries   </b>
+	<br> </br>
+	
+	<b> &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; Geo Map representation of Top Educational spending of countries year 2013 &emsp; &emsp; &emsp; &emsp; &emsp; &emsp;&emsp; &emsp; &emsp;&emsp; &emsp; &emsp;  &emsp; &emsp; &emsp;&emsp; &emsp; &emsp;&emsp; &emsp; &emsp;</b>
+	<td> <div  id ="EducationGeo_div" style="width:900px; height:500px"></div> </td>
+	
+	<b> Geo Map representation of Top Healthcare spending of countries year 2013 </b>
+	 <td><div  id ="HealthGeo_div" style="width:900px; height:500px"></div></td>
+	 
+	</tr> </table>
+	
+	<br></br>
+	<table><tr>
+	<b> Pie charts representation of Top Educational spending and Healthcare spending for countries  </b>
+	  <td> <div  id ="EducationPie_div" style="width:900px; height:500px"></div> </td>
+	 <td><div  id ="HealthPie_div" style="width:900px; height:500px"></div></td>
+	
+	</tr> </table>
+	<br></br>
+	<br></br>
+	
+	
+	 <table>
+	 <tr>
+	 
+	  <h2> Question 2 : Compare the Eduacational and Healthcare spending data to the country's GDP </h2>
+	 
+	
+	  
+	 
+	<b> Geo Map Representation of GDP in USD billions </b>
+	 <div id="GDPUSDBillions_div" style="width: 900px; height: 500px"></div>
+	</tr>
+	 </table>
+	<br></br>
+	
+	
+	<table><tr>
+	 
+	 <b>Comparing the Educational and Healthcare spending to the overall GDP of the country </b>
+	   <td><div id ="EducationGDP_div" style="width: 900px;height:500px"></div></td>
+	 <td><div id ="HealthcareGDP_div" style="width: 900px;height:500px"></div></td>
+	</tr>
+	</table>
+	<br></br>
+
+	<table> <tr>
+	 <b>Comparing the Educational and Healthcare spending to the overall GDP of the country  using Scatter charts</b>
+	   <td><div id ="ScatterEducation_div" style="width: 900px;height:500px"></div></td>
+	 <td><div id ="ScatterHealth_div" style="width: 900px;height:500px"></div></td>
+	</tr>
+	</table>
+	 <br> </br>
+	
+	
+	</table>
+	<br></br>
+	<br></br>
+
+	<h2> Question 3: Compare the data to the overall military spending of the country </h2>
+
+	
+	<table> <tr>
+	  <b> Comparing the Educational and Healthcare spending to the overall military spending of that country  </b>
+	    <td><div id ="EducationMilitary_div" style ="width:900px;height:400px"></div></td>
+	    <td> <div id ="HealthMilitary_div" style ="width: 900px;height:400px"></div></td>
+	   </tr>
+	  </table>
+	  <br></br>
+	
+	</table>
+	<br></br>
+	
+	 <h2> Question 4: Compare the per person Educational and Healthcare spending to per person GDP </h2>
+	 
+	 <table> <tr>
+	 <td> <div  id ="PercapitaEducationGdp_div" style="width:1000px; height:500px"></div> </td>
+	 <td>  <div id="PercapitaHealthGdp_div"  style="width:1000px; height:500px"></div></td>
+	 
+	</tr> 
+	</table>
+	
+
+	
+	 <table> <tr>
+	 <b>Bubble chart representation of comparison of  (Educational spending to GDP and  Health care spending ) in USD Billions for the year 2012 </b> 
+	<td><div  id ="HGE_div" style="width:900px; height:900px"></div> </td>
+	
+	</tr>
+	</table>
+	
+	</table>
+<br></br>
+	<br></br>
+	<br></br>
+	<h2> Question 5.1: Single out the fastest growing countries in Healthcare  spending in fixed value and percentage </h2>
+	 <table> <tr>
+	 <b> Fastest growing countries in terms of fixed value and Percentage for Healthcare</b> 
+	
+	 <td> <div  id ="HealthFixedValue_div" style="width:700px; height:500px"></div> </td>
+		 <td> <div  id ="HealthPercentValue_div" style="width:700px; height:500px"></div> </td> 
+	</tr> 
+	</table>
+	
+	
+	<br></br>
+	<br></br>
+
+	<h2> Question 5.2: Single out the fastest growing countries in Educational spending in fixed value and percentage </h2>
+	<table> <tr>
+	 <b> Fastest growing countries in terms of fixed value and Percentage for Education</b> 
+	
+	 <td> <div  id ="EducationFixedValue_div" style="width:700px; height:500px"></div> </td>
+		 <td> <div  id ="EducationPercentValue_div" style="width:700px; height:500px"></div> </td> 
+	</tr> 
+	</table>
+	</body>
+	 
+	</body>
+	</html>
